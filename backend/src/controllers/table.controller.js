@@ -18,7 +18,7 @@ const createTable = async (req, res) => {
     const { error } = schema.validate(req.body);
     if (error) return res.status(400).json({ message: error.details[0].message });
 
-    const qrCodeUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/menu/${req.user.restaurantId}/table/${req.body.tableNumber}`;
+    const qrCodeUrl = `${process.env.VITE_FRONTEND_URL || process.env.FRONTEND_URL || 'http://localhost:5173'}/menu/${req.user.restaurantId}/table/${req.body.tableNumber}`;
 
     const table = await Table.create({
       restaurantId: req.user.restaurantId,
@@ -85,7 +85,7 @@ const regenerateQr = async (req, res) => {
     // In a real app, we might add a unique hash to invalidate old QRs, but for now we just regenerate the URL
     // Maybe with a timestamp param to force refresh or a short UUID
     const randomHash = Math.random().toString(36).substring(2, 8);
-    table.qrCodeUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/menu/${req.user.restaurantId}/table/${table.tableNumber}?v=${randomHash}`;
+    table.qrCodeUrl = `${process.env.VITE_FRONTEND_URL || process.env.FRONTEND_URL || 'http://localhost:5173'}/menu/${req.user.restaurantId}/table/${table.tableNumber}?v=${randomHash}`;
     
     await table.save();
     res.json(table);
